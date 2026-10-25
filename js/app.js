@@ -18,11 +18,14 @@ const saveFavs=()=>{try{localStorage.setItem("presence:favs",JSON.stringify([...
 const S={cat:"all",price:"all",pers:"all",sort:"rel",q:"",favOnly:false,onlyNew:false};
 const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 
-function visual(p){
-  const image = imgs(p)[0];
-  return image ? `<img src="${image}" alt="${p.name}" loading="lazy" decoding="async">` :
-    `<div class="ph" role="img" aria-label="${p.name} — fotografia ainda não disponível"><span class="placeholder-index">P / ${String(PRODUCTS.indexOf(p)+1).padStart(2,"0")}</span><span class="placeholder-name">${p.name}</span><span class="placeholder-foot">Presence Papelaria<br><small>Fotografia em breve</small></span></div>`;
+const visualEscape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function visual(p,{source=imgs(p)[0],id='',eager=false,thumbnail=false,index=0}={}){
+  const name=visualEscape(p.name),status=source?'Fotografia indisponível':'Fotografia em breve';
+  const fallback=thumbnail?'<span class="image-unavailable">Imagem indisponível</span>':`<span class="ph" role="img" aria-label="${name} — fotografia ainda não disponível"><span class="placeholder-index">P / ${String(PRODUCTS.indexOf(p)+1).padStart(2,"0")}</span><span class="placeholder-name">${name}</span><span class="placeholder-foot">Presence Papelaria<br><small>${status}</small></span></span>`;
+  return `<span class="product-visual">${source?`<img ${id?`id="${id}"`:''} src="${visualEscape(source)}" alt="${thumbnail?'':name+(index?` — imagem ${index+1}`:'')}" loading="${eager?'eager':'lazy'}" decoding="async">`:''}<span class="image-fallback"${source?' hidden':''}>${fallback}</span></span>`;
 }
+// Image errors do not bubble. Capture them for cards, cart and gallery, including cached failures.
+document.addEventListener('error',event=>{const image=event.target;if(!image.matches?.('.product-visual > img'))return;image.hidden=true;image.parentElement.querySelector('.image-fallback').hidden=false},true);
 function list(){
   let a=PRODUCTS.filter(p=>(S.cat==="all"||(Array.isArray(S.cat)?S.cat.includes(p.cat):S.cat===p.cat))&&(S.price==="all"||(S.price==="priced")===(p.price!=null))&&(S.pers==="all"||(S.pers==="yes")===p.personalizable)&&(!S.favOnly||favs.has(p.id))&&(!S.onlyNew||p.isNew)&&(!S.q||norm(p.name+" "+catOf(p.cat).name+" "+p.desc+" "+(p.keywords||[]).join(" ")).includes(norm(S.q))));
   const byName=(x,y)=>x.name.localeCompare(y.name,"pt-BR");
@@ -84,15 +87,15 @@ $("#burger").onclick=()=>{const o=$("#burger").getAttribute('aria-expanded')!=='
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.querySelector('dialog[open]')&&$('#burger').getAttribute('aria-expanded')==='true'){e.preventDefault();closeM(true)}});
 matchMedia('(max-width:1080px)').addEventListener('change',e=>{if(!e.matches){const inside=$('#mnav').contains(document.activeElement);closeM();if(inside)$('#ddb').focus()}});
 addEventListener('storage',e=>{if(e.key==='presence:favs'||e.key===null){let value=e.newValue;try{value=localStorage.getItem('presence:favs')}catch(_){}const next=readFavorites(value);if(next.size===favs.size&&[...next].every(id=>favs.has(id)))return;favs=next;render()}});
-const imgs=p=>p.images&&p.images.length?p.images:(p.img?[p.img]:[]);
+const imgs=p=>{const images=Array.isArray(p.images)?p.images.filter(u=>typeof u==='string'&&u.trim()):[];return images.length?images:(typeof p.img==='string'&&p.img.trim()?[p.img]:[])};
 let curP=null;
 const detailOrigins=new Map();
 function showP(p){
   curP=p;const c=catOf(p.cat),im=imgs(p),vs=p.variants||[],inf=p.info||[],q=p.price==null;
-  const main=im.length?`<img id="gm" src="${im[0]}" alt="${p.name}">`:visual(p);
+  const main=visual(p,{id:'gm',eager:true});
   const sent="Ao clicar, abrimos o WhatsApp com uma mensagem pronta com o produto"+(p.noQty?"":", a quantidade")+(vs.length?", a opção escolhida":"")+(p.personalizable?" e seu pedido de personalização":"")+". Você precisa enviar a mensagem. A loja confirmará disponibilidade, frete, valor final e instruções de pagamento na conversa. Abrir o WhatsApp não registra nem confirma um pedido.";
   $("#detail").innerHTML=`<div class="wrap"><nav class="crumb" aria-label="Você está em"><a href="#produtos" data-cat="all">Produtos</a> / <a href="#produtos" data-cat="${c.id}">${c.name}</a> / ${p.name}</nav>
-<div class="dpage"><div class="gal"><div class="main">${main}</div>${im.length>1?`<div class="thumbs">${im.map((u,i)=>`<button type="button" data-th="${i}" aria-label="Ver imagem ${i+1} de ${p.name}" aria-current="${i===0}"><img src="${u}" alt=""></button>`).join("")}</div>`:""}</div>
+<div class="dpage"><div class="gal"><div class="main">${main}</div>${im.length>1?`<p class="gallery-position" aria-live="polite">Imagem 1 de ${im.length}</p><div class="thumbs">${im.map((u,i)=>`<button type="button" data-th="${i}" aria-label="Ver imagem ${i+1} de ${visualEscape(p.name)}" aria-current="${i===0}">${visual(p,{source:u,thumbnail:true})}</button>`).join("")}</div>`:""}</div>
 <div class="pi"><h1 id="pt" tabindex="-1">${p.name}</h1><p class="product-description">${p.desc}</p><hr class="sep">
 <div class="big${q?" q":""}">${q?CONFIG.quoteLabel:brl(p.price)}</div>${q?'<p class="note">Preço a confirmar. Peça um orçamento pelo WhatsApp.</p>':""}
 ${vs.length?`<hr class="sep"><fieldset class="opts"><legend>${p.variantLabel||"Opção"}</legend>${vs.map((v,i)=>`<label><input type="radio" name="v" value="${v}"${i?"":" checked"}><span>${v}</span></label>`).join("")}</fieldset>`:""}
@@ -103,7 +106,7 @@ ${inf.length?`<div class="product-accordions">${inf.map(i=>`<details class="acc"
   upd()}
 function upd(){const a=$("#dgo");if(!a||!curP)return;const q=$("#dq"),n=$("#dn"),v=document.querySelector("input[name=v]:checked");a.href=wa(msg(curP,q?Math.min(99,Math.max(1,parseInt(q.value)||1)):1,n?n.value.trim():"",v?v.value:""))}
 $("#detail").addEventListener("click",e=>{const t=e.target.closest("[data-th],[data-q]");if(!t)return;
-  if(t.dataset.th!==undefined){$("#gm").src=imgs(curP)[t.dataset.th];document.querySelectorAll(".thumbs button").forEach(b=>b.setAttribute("aria-current",b===t))}
+  if(t.dataset.th!==undefined){const index=Number(t.dataset.th);$('.gal .main').innerHTML=visual(curP,{source:imgs(curP)[index],id:'gm',eager:true,index});$('.gallery-position').textContent=`Imagem ${index+1} de ${imgs(curP).length}`;document.querySelectorAll(".thumbs button").forEach(b=>b.setAttribute("aria-current",b===t))}
   else{const q=$("#dq");q.value=Math.min(99,Math.max(1,(parseInt(q.value)||1)+parseInt(t.dataset.q)));upd()}});
 $("#detail").addEventListener("input",upd);
 const BASE=document.title;

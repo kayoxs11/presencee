@@ -42,6 +42,7 @@ nav.main>a,.ddb{transition:border-color var(--motion-fast),color var(--motion-fa
 .coll>.wrap>.eyebrow{margin-bottom:12px}
 .coll h2{font-size:clamp(36px,4.4vw,56px);letter-spacing:-.025em}
 .coll .sub{max-width:48ch;margin-top:12px;margin-bottom:28px}
+.catalog-guidance{max-width:78ch;font-size:14px;line-height:1.7;color:var(--muted);margin:-12px 0 26px}
 .tools{padding:14px 0;margin-bottom:28px}
 .tools select{background:transparent;border-color:var(--line);font-size:13px}
 .grid{gap:36px 22px}
@@ -117,6 +118,22 @@ footer :focus-visible{outline-color:#E5CAA0}
 .whatsapp-float:focus-visible .contact-tooltip{opacity:1}
 .gal .ph{min-height:100%;padding:40px}
 .gal .placeholder-name{font-size:clamp(36px,4vw,56px)}
+/* Stable frames preserve the whole photograph; failures retain a truthful label. */
+.product-visual,.image-fallback{display:block;width:100%;height:100%;min-width:0}
+.product-visual>[hidden]{display:none!important}
+.gal .main img{padding:20px;display:block}
+.thumbs .product-visual img{object-fit:contain;padding:4px}
+.image-unavailable{height:100%;display:grid;place-items:center;padding:6px;font:400 11px/1.3 var(--sans);color:var(--muted);overflow-wrap:anywhere}
+.gallery-position{margin:10px 0 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card .info{gap:8px}
+.card h3{line-height:1.45;font-weight:600;overflow-wrap:anywhere}
+.card .price{font-size:16px;margin-top:auto;padding-top:4px;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.card .price.q{font-size:14px}
+.pi{min-width:0}
+.pi .product-description{color:var(--muted);line-height:1.75;margin-top:14px;max-width:48ch}
+.pi .note{font-size:14px;line-height:1.7;color:var(--muted)}
+.pi h1{line-height:1.1;overflow-wrap:anywhere}
+.pi .btn.lg{height:auto;min-height:52px;text-align:center;line-height:1.4}
 html{scroll-padding-bottom:90px}
 @media (hover:hover) and (pointer:fine){
   .card:hover{transform:translateY(-4px)}
@@ -147,7 +164,11 @@ html{scroll-padding-bottom:90px}
   .ig{padding:32px 0}.ig .wrap{gap:12px}.ig h2{font-size:32px}.ig-signature{justify-self:start;font-size:28px}.ig-signature span{font-size:10px}
   .footer-intro{padding:34px 0 28px}.footer-intro p{font-size:35px}.footer-intro .back-top{position:static;display:inline-flex;margin-top:12px}.fg{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 20px;padding-top:30px}.footer-brand{grid-column:1/-1}.footer-brand p{max-width:34ch}.fg>div:last-child{display:block;padding-right:62px}.fg>div:last-child p{margin:0 0 12px}.fg>div:last-child h2{margin-bottom:14px}footer h2{font-size:10px;margin-bottom:12px}.fg a:not(.logo){min-height:44px;font-size:12px}footer .logo{font-size:36px}.copy{font-size:10px;line-height:1.7;margin-top:24px}
   .whatsapp-float{width:48px;height:48px;right:max(14px,env(safe-area-inset-right))}.whatsapp-float>svg{width:25px;height:25px}.contact-tooltip{display:none}
-  html{scroll-padding-top:140px}.gal .ph{padding:28px}.gal .placeholder-name{font-size:40px}
+  html{scroll-padding-top:140px}.gal .ph{padding:28px}.gal .placeholder-name{font-size:clamp(30px,8vw,40px);max-width:100%}
+  .ph .placeholder-foot,.placeholder-foot small,.ph .placeholder-index{font-size:10px}
+  .card .cl{font-size:11px;line-height:1.5}.card h3{font-size:15px}
+  .card .price{font-size:16px}.card .price.q{font-size:13px}
+  .gal .main img{padding:14px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:360px){

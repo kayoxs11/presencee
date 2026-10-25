@@ -24,8 +24,20 @@
     $('#checkout-items').innerHTML = order.entries.length ? items(order.entries.map(e => ({ ...e, name: e.product.name }))) : '<p>Seu carrinho está vazio. Volte ao catálogo para escolher seus produtos.</p>';
     $('#review-result').replaceChildren();
     if (order.entries.length) {
-      const totals = document.createElement('p');
-      totals.textContent = 'Subtotal dos produtos: ' + money(order.subtotal) + '. Desconto estimado: ' + money(order.discount) + (order.coupon?.valid ? ' (' + order.coupon.code + ')' : '') + '. Total dos produtos: ' + money(order.total) + '. Frete: a consultar. Total final: a confirmar pelo WhatsApp.';
+      const totals = document.createElement('dl');
+      totals.className = 'selection-totals';
+      const rows = [
+        ['Subtotal dos produtos:', money(order.subtotal)],
+        ['Desconto estimado:', money(order.discount) + (order.coupon?.valid ? ' (' + order.coupon.code + ')' : '')],
+        ['Total dos produtos:', money(order.total)],
+        ['Frete:', 'a consultar'],
+        ['Total final:', 'a confirmar pelo WhatsApp'],
+      ];
+      rows.forEach(([label, value]) => {
+        const row = document.createElement('div'), term = document.createElement('dt'), description = document.createElement('dd');
+        term.textContent = label; description.textContent = value;
+        row.append(term, ' ', description); totals.append(row);
+      });
       $('#review-result').append(totals);
     }
     message = engine.message(order, money, { destination: destination || '', selected: null, productTotal: order.total, shippingDiscount: 0 });
