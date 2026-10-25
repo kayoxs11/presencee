@@ -1,0 +1,72 @@
+/* Shared rounded-rectangle controls, including the editorial card actions. */
+:root{--radius-control:14px;--radius-icon:12px;--feedback-error:#9D302A;--feedback-success:#046A6A}
+:root[data-theme="dark"]{--feedback-error:#FFB4A9;--feedback-success:#70CECA}
+.btn,.card .btn,.pers .btn,.ctas .ghost,select,input:not([type=radio]),textarea,.qty,.opts span{border-radius:var(--radius-control)}
+.ibtn,.fav,.thumbs button,.plist button,.cat{border-radius:var(--radius-icon)}
+.fav{width:40px;height:40px}
+.card .btn{padding:10px 12px;border:1px solid var(--line);gap:6px;text-align:center;justify-content:center;line-height:1.35}
+.card .btn[data-add-cart]{background:var(--button);border-color:var(--button);color:var(--on-button)}
+.card .btn[data-add-cart]::after{content:'+'}
+.card .btn[data-add-cart]:hover{background:var(--button-hover);border-color:var(--button-hover);color:var(--on-button)}
+.detail-cart-actions{display:grid;gap:12px}
+.detail-cart-actions .btn{width:100%}
+button:disabled,.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed;transform:none}
+.qty button{min-width:40px;min-height:44px;border-radius:12px}
+.qty input{min-width:40px}
+.cart-toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,8px);max-width:min(440px,calc(100% - 96px));padding:12px 18px;background:var(--text);color:var(--white);z-index:75;font-size:13px;border-radius:14px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+.cart-toast.show{opacity:1;transform:translate(-50%,0)}
+.cart-is-open{overflow:hidden}
+.cart-is-open .contact-dock{visibility:hidden}
+.cart-drawer{position:fixed;inset:0 0 0 auto;margin:0;width:min(520px,100%);max-width:100%;height:100dvh;max-height:100dvh;padding:0;border:0;border-left:1px solid var(--line);background:var(--white);color:var(--text);overflow:auto;overscroll-behavior:contain}
+.cart-drawer[open]{display:flex;flex-direction:column}
+.cart-drawer::backdrop{background:#081A1A80}
+.cart-header{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--white);z-index:2}
+.cart-header h2{font-size:32px;color:var(--heading)}
+.cart-body{padding:0 24px 24px;flex:1}
+.cart-notice{font-size:13px;color:var(--muted);margin:16px 0}
+.cart-notice:empty{display:none}
+.cart-line{display:grid;grid-template-columns:86px minmax(0,1fr);gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.cart-image{aspect-ratio:1/1.2;overflow:hidden;background:var(--cream);border-radius:6px}
+.cart-image img{width:100%;height:100%;object-fit:contain}
+.cart-image .ph{padding:10px;justify-content:center}
+.cart-image .placeholder-index,.cart-image .placeholder-foot{display:none}
+.cart-image .ph .placeholder-name{font-size:19px;overflow-wrap:anywhere}
+.cart-line h3{font:500 16px/1.35 var(--sans);margin:0 0 6px}
+.cart-line h3 a{text-decoration:none;color:var(--text)}
+.cart-line p{font-size:12px;color:var(--muted);margin:5px 0;overflow-wrap:anywhere}
+.cart-line-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.cart-line .qty input{width:42px;padding:0;border-radius:0}
+.cart-line .qty button{width:38px;min-width:38px}
+.cart-line .link{font-size:12px;min-height:44px}
+.line-total{font-size:14px;color:var(--teal)}
+.cart-empty{padding:32px 0;color:var(--muted)}
+.cart-empty h3{font:500 28px/1.15 var(--serif);color:var(--heading)}
+.cart-empty p{font-size:14px}
+.coupon-area{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+.coupon-area label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
+.coupon-row{display:flex;gap:8px}
+.coupon-row input{min-width:0;width:100%;height:44px;border:1px solid var(--line);padding:0 12px;background:var(--cream);color:var(--text);font:inherit;font-size:14px}
+.coupon-row .btn{font-size:13px;padding:10px 14px;white-space:nowrap}
+.coupon-feedback{font-size:13px;color:var(--muted);margin:8px 0;min-height:20px}
+.coupon-feedback[data-state=error]{color:var(--feedback-error)}
+.coupon-feedback[data-state=success]{color:var(--feedback-success)}
+.applied-coupon{display:flex;gap:10px;align-items:center;font-size:13px;flex-wrap:wrap}
+.applied-coupon .link{min-height:44px}
+.cart-totals{display:grid;gap:10px;margin:24px 0}
+.cart-totals>div{display:flex;justify-content:space-between;gap:16px;font-size:14px}
+.cart-totals dt,.cart-totals dd{margin:0}
+.cart-totals .final-total{border-top:1px solid var(--line);padding-top:14px;font-size:20px;font-weight:600;color:var(--heading)}
+.cart-actions{display:grid;gap:10px}
+.cart-explanation{font-size:12px;line-height:1.6;color:var(--muted);margin:14px 0}
+.checkout-fallback{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}
+.checkout-fallback label{display:block;margin:12px 0;font-weight:500}
+.checkout-fallback textarea{width:100%;height:220px;resize:vertical;background:var(--cream);color:var(--text);border:1px solid var(--line);padding:12px;font:400 13px/1.6 var(--sans)}
+.checkout-fallback .btn{margin-top:10px;width:100%}
+.cart-clear{display:block;margin:18px auto 0;min-height:44px}
+@media(prefers-reduced-motion:no-preference){.cart-drawer[open]{animation:drawer-in .22s var(--ease-out)}.cart-drawer.closing{animation:drawer-out .16s ease-in forwards}@keyframes drawer-in{from{transform:translateX(100%)}to{transform:translateX(0)}}@keyframes drawer-out{to{transform:translateX(100%)}}}
+@media(max-width:760px){
+  .bar{gap:8px}.bar .logo{font-size:27px}.bar .ibtn{width:36px;height:40px}.bar .theme-toggle{width:38px}.bar .logo small{font-size:9px}
+  .card .btn{font-size:11px;min-height:48px;padding:9px 7px}
+  .cart-header{padding:18px 20px}.cart-body{padding:0 20px 24px}.cart-line{grid-template-columns:64px minmax(0,1fr);gap:12px}.cart-line-controls{gap:4px}.cart-image .ph .placeholder-name{font-size:16px}.cart-header h2{font-size:29px}
+}
+@media(max-width:360px){.bar{gap:6px}.bar .logo{font-size:25px}.wrap.bar{padding-left:14px;padding-right:14px}.bar .ibtn{width:34px}.bar .theme-toggle{width:34px}.cart-body{padding-left:16px;padding-right:16px}.cart-line{grid-template-columns:54px minmax(0,1fr);gap:10px}.cart-line .qty button{width:34px;min-width:34px}.cart-line .qty input{width:38px}.coupon-row .btn{padding:9px 10px;font-size:12px}}

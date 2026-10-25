@@ -1,0 +1,19 @@
+{
+  "name": "presence-papelaria",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "start": "node scripts/serve.cjs --dev",
+    "dev": "node scripts/serve.cjs --dev",
+    "preview": "node scripts/serve.cjs",
+    "test:server": "node --test tests/server.test.cjs",
+    "start:production": "node --env-file=.env scripts/serve.cjs",
+    "admin:password": "node scripts/admin-password.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}
